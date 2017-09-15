@@ -7,102 +7,110 @@
 package controllers
 
 import (
-	"github.com/jinzhu/gorm"
 	"CongNet/models"
-	"log"
 )
 
-// 用户注册，传入 db 指针 和 用户信息，返回 error
-func RegisterUser(db *gorm.DB, user models.User) error {
-	err := db.Create(&user).Error
-	return err
+
+// register
+type RegisterUserController struct {
+	BaseController
 }
 
-// 用户登陆，传入 db 指针 和 用户信息，返回 error
-func LoginUser(db *gorm.DB, name, password string) error {
-	ret := db.Where("name = ? AND password = ?", name, password).First(&models.User{}).Scan(&models.User{})
-	err := ret.Error
-	if err == nil {
-		log.Println(name, "Login Success")
+func (this *RegisterUserController) Get() {
+	check := this.isLogin
+	if check {
+		this.Redirect("/article", 302)
 	} else {
-		log.Println(name, "Login Fail")
+		this.TplName = "register.tpl"
 	}
-	return err
 }
 
-// 根据 Email 查找用户信息
-func SearchUserByEmail(db *gorm.DB, email string) (string, error) {
-	user := &models.User{
-		Email: 	email,
-	}
-	ret := db.First(&user, "email=?", email)
-	err := ret.Error
-	var rets string
-	if err != nil {
-		rets = "Your Email Wrong"
-		return rets, err
-	}
-	rets = "\nUsername: " + user.Name + "\nPassword: " + user.Password + "\nEmail: " + user.Email
+func (this *RegisterUserController) Post() {
+	name := this.GetString("name")
+	password := this.GetString("password")
+	email := this.GetString("email")
 
-	return rets, err
-}
+	if "" == name {
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "请填写用户名"}
+		this.ServeJSON()
+	}
 
-// 删除用户  软删除，在数据库中记录删除时间，不会真正删除记录
-func DeleteUser(db *gorm.DB, name, password string) error {
-	ret := db.Delete(models.User{}, "name = ? AND password = ?", name, password)
-	err := ret.Error
+	if "" == password {
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "请填写密码"}
+		this.ServeJSON()
+	}
+
+	if "" == email {
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "请填写邮箱"}
+		this.ServeJSON()
+	}
+
+	user := models.User{
+		Name: 		name,
+		Password: 	password,
+		Email: 		email,
+	}
+
+	err := models.RegisterUser(user)
+
 	if err == nil {
-		log.Println("Delete Success")
+		//this.SetSession("userLogin", "1")
+		this.Data["json"] = map[string]interface{}{"code": 1, "message": "注册成功"}
 	} else {
-		log.Println("Delete Fail")
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "注册失败"}
 	}
-	return err
+	this.ServeJSON()
+	this.Redirect("/register", 302)
 }
 
-// 修改密码
-func UpdateUserPassword(db *gorm.DB, name, password, email, newpassword string) error {
-	user := &models.User{}
-	ret := db.Where("name = ? AND password = ? AND email = ?", name, password, email).First(&models.User{})
-	err := ret.Error
-	if err == nil {
-		ret.First(&user, "name=?", name)
-		user.Password = newpassword
-		err2 := ret.Select("password").Updates(user).Error
-		if err2 != nil {
-			log.Println(err2)
-			log.Println("Update Password Error")
-			return err2
-		} else {
-			log.Println("Update Password Success")
-			return nil
-		}
+
+// login
+type LoginUserController struct {
+	BaseController
+}
+
+func (this *LoginUserController) Get() {
+	check := this.isLogin
+	if check {
+		this.Redirect("/article", 302)
 	} else {
-		log.Println(err)
-		log.Println("Your Information Wrong")
-		return err
+		this.TplName = "login.tpl"
 	}
 }
 
-// 修改邮箱
-func UpdateUserEmail(db *gorm.DB, name, password, newemail string) error {
-	user := &models.User{}
-	ret := db.Where("name = ? AND password = ?", name, password).First(&models.User{})
-	err := ret.Error
-	if err == nil {
-		ret.First(&user, "name=?", name)
-		user.Email = newemail
-		err2 := ret.Select("email").Updates(user).Error
-		if err2 != nil {
-			log.Println(err2)
-			log.Println("Update Email Error")
-			return err2
-		} else {
-			log.Println("Update Email Success")
-			return nil
-		}
-	} else {
-		log.Println(err)
-		log.Println("Your Information Wrong")
-		return err
+func (this *LoginUserController) Post() {
+	name := this.GetString("name")
+	password := this.GetString("password")
+
+	if "" == name {
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "请填写用户名"}
+		this.ServeJSON()
 	}
+
+	if "" == password {
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "请填写密码"}
+		this.ServeJSON()
+	}
+
+	err := models.LoginUser(name, password)
+
+	if err == nil {
+		this.SetSession("userLogin", "1")
+		this.Data["json"] = map[string]interface{}{"code": 1, "message": "登录成功"}
+	} else {
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "登录失败"}
+	}
+	this.ServeJSON()
+}
+
+
+// logout
+type LogoutUserController struct {
+	BaseController
+}
+
+func (this *LogoutUserController) Get() {
+	this.DelSession("userLogin")
+	//this.Ctx.WriteString("you have logout")
+	this.Redirect("/article", 302)
 }

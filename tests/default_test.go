@@ -36,4 +36,3 @@ func TestBeego(t *testing.T) {
 	        })
 	})
 }
-
