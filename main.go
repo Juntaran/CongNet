@@ -9,14 +9,14 @@ import (
 
 func main() {
 
-	//// 从配置文件 conf/app.conf 中读取配置
+	// 从配置文件 conf/app.conf 中读取配置
 	//sqluser := beego.AppConfig.String("mysqluser")
 	//sqlpass := beego.AppConfig.String("mysqlpass")
 	//sqlurl  := beego.AppConfig.String("mysqlurls")
 	//sqldb   := beego.AppConfig.String("mysqldb")
 	//
 	//// 在 models 层创建数据库连接
-	//db, err := models.InitMySql(sqlurl, sqluser, sqlpass, sqldb)
+	//_, err := models.InitMySql(sqlurl, sqluser, sqlpass, sqldb)
 	//if err != nil {
 	//	log.Println(err)
 	//	panic(err)
@@ -48,11 +48,11 @@ func main() {
 	//rets, _ := models.SearchUserByEmail(db, "jacinthmail@gmail.com")
 	//log.Println(rets)
 	//
-	//// 删除用户
-	////err = models.DeleteUser(db, "Juntaran", "root")
-	////if err != nil {
-	////	log.Println(err)
-	////}
+	// 删除用户
+	//err = models.DeleteUser("Juntaran2", "rootroot","jacinthmail2@sina.com")
+	//if err != nil {
+	//	log.Println(err)
+	//}
 	//
 	//// 更改用户密码
 	//err = models.UpdateUserPassword(db, "Juntaran", "root", "jacinthmail@gmail.com", "root111root")

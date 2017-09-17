@@ -10,7 +10,7 @@
   <form class="form-signin" id="login-form">
     <h2 class="form-signin-heading">请登录</h2>
     <label for="inputEmail" class="sr-only">Username</label>
-    <input type="tel" name="name" class="form-control" placeholder="Username" required autofocus>
+    <input type="tel" name="name" class="form-control" placeholder="Email" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" name="password" class="form-control" placeholder="Password" required>
     <div class="checkbox">
@@ -19,8 +19,10 @@
       Remember me </label>
     </div>
     <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
-    <button class="btn btn-sm btn-warning btn-block" type="button">找回密码</button>
-    <button class="btn btn-sm btn-danger  btn-block" type="button">销号</button>
+    <button class="btn btn-sm btn-warning btn-block" type="button" onclick="window.location='/getInfo'">找回注册信息</button>
+    <button class="btn btn-sm btn-warning btn-block" type="button" onclick="window.location='/updateInfo'">修改密码和邮箱地址</button>
+    <button class="btn btn-sm btn-danger  btn-block" type="button" onclick="window.location='/cancellation'">销号</button>
+    <button class="btn btn-sm btn-primary  btn-block" type="button" onclick="window.location='/register'">没有账号点击注册</button>
   </form>
 </div>
 {{template "inc/foot.tpl" .}}

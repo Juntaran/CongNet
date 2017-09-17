@@ -10,6 +10,7 @@ import (
 	"log"
 	"github.com/jinzhu/gorm"
 	"github.com/astaxie/beego"
+	"errors"
 )
 
 type User struct {
@@ -18,6 +19,7 @@ type User struct {
 	Name			string  `gorm:"type:varchar(128);unique_index;not null"` 	// string 默认长度为255, 使用这种tag重设。
 	Password		string	`gorm:"type:varchar(128);not null"`					// 密码
 	Email 			string	`gorm:"type:varchar(128);unique_index;not null"` 	// `type`设置sql类型, `unique_index` 为该列设置唯一索引
+	Cancel 			uint														// 是否注销 0为正常用户，1为已经注销用户
 }
 
 var db *gorm.DB
@@ -46,18 +48,31 @@ func RegisterUser(user User) error {
 }
 
 // 用户登陆，传入 db 指针 和 用户信息，返回 error
-func LoginUser(name, password string) error {
+func LoginUser(email, password string) (int, error) {
 
-	log.Println("start login", name, password)
-	ret := db.Where("name = ? AND password = ?", name, password).First(&User{}).Scan(&User{})
-	log.Println(db.Where("name = ? AND password = ?", name, password).First(&User{}))
+	log.Println("start login", email, password)
+	ret := db.Where("email = ? AND password = ?", email, password).First(&User{}).Scan(&User{})
+	log.Println(db.Where("email = ? AND password = ?", email, password).First(&User{}))
+
 	err := ret.Error
 	if err == nil {
-		log.Println(name, "Login Success")
+
+		// 是否为注销用户判断
+		isCancel := &User{
+			Email: 		email,
+			Password: 	password,
+		}
+		db.First(&isCancel,"email = ? AND password = ?", email, password)
+		if isCancel.Cancel == 1 {
+			log.Println("Farewell, this user is Canceled")
+			err = errors.New("Farewell, this user is Canceled")
+			return 1, err
+		}
+		log.Println(email, "Login Success")
 	} else {
-		log.Println(name, "Login Fail")
+		log.Println(email, "Login Fail")
 	}
-	return err
+	return 0, err
 }
 
 // 根据 Email 查找用户信息
@@ -77,16 +92,28 @@ func SearchUserByEmail(email string) (string, error) {
 	return rets, err
 }
 
-// 删除用户  软删除，在数据库中记录删除时间，不会真正删除记录
-func DeleteUser(name, password string) error {
-	ret := db.Delete(User{}, "name = ? AND password = ?", name, password)
+// 删除用户，不会真正把用户删掉，会把密码清空
+func DeleteUser(name, password, email string) error {
+	user := &User{}
+	ret := db.Where("name = ? AND password = ? AND email = ?", name, password, email).First(&User{})
 	err := ret.Error
 	if err == nil {
-		log.Println("Delete Success")
+		ret.First(&user, "name=?", name)
+		user.Cancel = 1
+		err2 := ret.Select("cancel").Updates(user).Error
+		if err2 != nil {
+			log.Println(err2)
+			log.Println("Update Password Error")
+			return err2
+		} else {
+			log.Println("Update Password Success")
+			return nil
+		}
 	} else {
-		log.Println("Delete Fail")
+		log.Println(err)
+		log.Println("Your Information Wrong")
+		return err
 	}
-	return err
 }
 
 // 修改密码

@@ -108,17 +108,17 @@ $(function(){
         }
     });
 
-	//登录
+	// 登录
     $('#login-form').validate({
         ignore:'',
         rules : {
             // phone:{ required : true, number:true,rangelength:[11,11]},
-            name:{ required : true },
+            email:{ required : true },
             password:{required : true}
         },
         messages : {
             // phone : {required : '请填写手机号',number:'请填写正确的手机号',rangelength : '请填写11位手机号'},
-            name : {required : '请填写用户名'},
+            email : {required : '请填写注册邮箱'},
             password : {required: '请填写密码'}
         },
         submitHandler:function(form) {
@@ -128,11 +128,10 @@ $(function(){
                 type:'POST',
                 dataType:'json',
                 success:function(data) {
-                    dialogInfo(data.message)
                     if (data.code == 1) {
-                       setTimeout(function(){window.location.reload();}, 2000);
+                        setTimeout(function(){window.location.reload();}, 2000);
                     } else {
-                        
+                        dialogInfo(data.message);
                     }
                 }
             });
@@ -140,7 +139,39 @@ $(function(){
     });
 
 
-    //注册
+    // 注销
+    $('#cancel-form').validate({
+        ignore:'',
+        rules : {
+            name: { required : true },
+            email:{ required : true },
+            password:{required : true}
+        },
+        messages : {
+            name : {required : '请填写用户名'},
+            email : {required : '请填写注册邮箱'},
+            password : {required: '请填写密码'}
+        },
+        submitHandler:function(form) {
+            var url = '/cancellation';
+            $(form).ajaxSubmit({
+                url:url,
+                type:'POST',
+                dataType:'json',
+                success:function(data) {
+                    dialogInfo(data.message);
+                    if (data.code == 1) {
+                        setTimeout(function(){window.location.reload();}, 2000);
+                    } else {
+
+                    }
+                }
+            });
+        }
+    });
+
+
+    // 注册
     $('#register-form').validate({
         ignore:'',
         rules : {
@@ -164,9 +195,9 @@ $(function(){
                 success:function(data) {
                     dialogInfo(data.message)
                     if (data.code == 1) {
-                        setTimeout(function(){window.location.reload();}, 2000);
+                        window.location='/login';
+                        // setTimeout(function(){window.location.reload();}, 2000);
                     } else {
-                        window.alert("Register Fail")
                     }
                 }
             });
