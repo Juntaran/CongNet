@@ -2,9 +2,9 @@ package main
 
 import (
 	_ "CongNet/routers"
+	"github.com/astaxie/beego"
 	//"CongNet/models"
 	//"log"
-	"github.com/astaxie/beego"
 )
 
 func main() {
@@ -73,6 +73,15 @@ func main() {
 	//// 根据 Email 查找用户信息
 	//rets, _ = models.SearchUserByEmail(db, "jacinthmail@sina.com")
 	//log.Println(rets)
+
+	//models.StartAddFriend(3, 1, "111")
+	//models.AcceptAddFriend(3, 1)
+	//
+	//models.StartAddFriend(3, 2, "222")
+	//models.AcceptAddFriend(3, 2)
+
+	//friends, length, _ := models.GetAllFriend(4)
+	//log.Println(friends, length)
 
 	beego.Run()
 }

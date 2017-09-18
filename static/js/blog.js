@@ -204,6 +204,32 @@ $(function(){
         }
     });
 
+    // 查看好友
+    $('#friends-form').validate({
+        ignore:'',
+        rules : {
+            userid:{ required : true }
+        },
+        messages : {
+            userid : {required : '请填写您的id'},
+        },
+        submitHandler:function(form) {
+            var url = '/friends';
+            $(form).ajaxSubmit({
+                url:url,
+                type:'POST',
+                dataType:'json',
+                success:function(data) {
+                    dialogInfo(data.message)
+                    if (data.code == 1) {
+                        // setTimeout(function(){window.location.reload();}, 2000);
+                    } else {
+                    }
+                }
+            });
+        }
+    });
+
 
     $('body').delegate('.js-album-submit', 'click', function(){
 		var that = $(this);

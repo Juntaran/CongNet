@@ -8,37 +8,16 @@ package models
 
 import (
 	"log"
-	"github.com/jinzhu/gorm"
-	"github.com/astaxie/beego"
 	"errors"
 )
 
 type User struct {
-	//gorm.Model
-	ID          	uint    `gorm:"primary_key;AUTO_INCREMENT"` 				// gorm 会自动设置字段 ID 默认为主键自增
+	//gorm.Model	// gorm 会自动设置字段 ID 默认为主键自增，也会设置软删除相关字段
+	ID          	uint    `gorm:"primary_key;AUTO_INCREMENT"` 				// ID 主键
 	Name			string  `gorm:"type:varchar(128);unique_index;not null"` 	// string 默认长度为255, 使用这种tag重设。
 	Password		string	`gorm:"type:varchar(128);not null"`					// 密码
 	Email 			string	`gorm:"type:varchar(128);unique_index;not null"` 	// `type`设置sql类型, `unique_index` 为该列设置唯一索引
 	Cancel 			uint														// 是否注销 0为正常用户，1为已经注销用户
-}
-
-var db *gorm.DB
-
-func init()  {
-	// 从配置文件 conf/app.conf 中读取配置
-	sqluser := beego.AppConfig.String("mysqluser")
-	sqlpass := beego.AppConfig.String("mysqlpass")
-	sqlurl  := beego.AppConfig.String("mysqlurls")
-	sqldb   := beego.AppConfig.String("mysqldb")
-
-	var err error
-	db, err = InitMySql(sqlurl, sqluser, sqlpass, sqldb)
-	if err != nil {
-		log.Println(err)
-		panic(err)
-	} else {
-		log.Println("db init success")
-	}
 }
 
 // 用户注册，传入 db 指针 和 用户信息，返回 error
