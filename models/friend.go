@@ -122,7 +122,7 @@ func BlockAddFriend(u_id, f_id uint) error {
 }
 
 // 获取一个用户的所有好友，返回他的好友id list 以及 list 大小
-func GetAllFriend(userid string) ([]string, int, error) {
+func getAllFriendID(userid string) ([]uint, int, error) {
 	// 先判断这个 userid 是否存在
 	//ret := db.Where("id = ?", userid).First(&User{}).Scan(&User{})
 	log.Println(userid)
@@ -169,6 +169,7 @@ func GetAllFriend(userid string) ([]string, int, error) {
 	rows2, err := db2.Query("SELECT u_id FROM friends WHERE f_id=?", userid)
 	if err != nil {
 		log.Println(err)
+		return nil, 0, err
 	} else {
 		for rows2.Next() {
 			var retUid uint
@@ -178,15 +179,23 @@ func GetAllFriend(userid string) ([]string, int, error) {
 			friends = append(friends, retUid)
 		}
 	}
+	return friends, len(friends), nil
+}
 
+// 获取一个用户的所有好友，返回他的好友name list 以及 list 大小
+func GetAllFriend(userid string) ([]string, int, error) {
+	friends, length, err := getAllFriendID(userid)
+	if err != nil {
+		log.Println(err)
+		return nil, 0, err
+	}
 	var ret []string
-	for i := 0; i < len(friends); i++ {
+	for i := 0; i < length; i++ {
 		var name string
 		db2.QueryRow("SELECT name FROM users WHERE id=?", strconv.Itoa(int(friends[i]))).Scan(&name)
 		ret = append(ret, name)
 	}
-
 	log.Println(ret)
 	log.Println("Search Success")
-	return ret, len(friends), nil
+	return ret, length, nil
 }

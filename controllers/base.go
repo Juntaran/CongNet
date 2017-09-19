@@ -6,21 +6,33 @@
 
 package controllers
 
-import "github.com/astaxie/beego"
+import (
+	"github.com/astaxie/beego"
+)
 
 // https://my.oschina.net/lockupme/blog/
 
 type BaseController struct {
 	beego.Controller
-	isLogin bool
+	isLogin		bool
+	userEmail	string
 }
+
+var userTempEmail string = ""
 
 func (this *BaseController) Prepare() {
 	userLogin := this.GetSession("userLogin")
 	if userLogin == nil {
 		this.isLogin = false
+		this.userEmail = ""
 	} else {
 		this.isLogin = true
+		value, ok := this.GetSession("userEmail").(string)
+		if !ok {
+			this.isLogin = false
+			this.userEmail = ""
+		}
+		this.userEmail = value
 	}
 	this.Data["isLogin"] = this.isLogin
 }

@@ -8,6 +8,8 @@ package controllers
 
 import (
 	"CongNet/models"
+	"strconv"
+	"log"
 )
 
 
@@ -69,10 +71,22 @@ type LoginUserController struct {
 	BaseController
 }
 
+func (this *LoginUserController) List() {
+
+}
+
 func (this *LoginUserController) Get() {
-	check := this.isLogin
-	if check {
-		this.Redirect("/article", 302)
+	if this.isLogin == true {
+		// 1. 先根据 session 存储的 userEmail 查找 userid
+		//log.Println("logincontroller:", this.userEmail)
+		userid := models.GetIDByEmail(this.userEmail)
+		log.Println("List userid:", userid)
+
+		// 2. 跳转到 /user/userid
+		url := this.URLFor("LoginUserController.List()", ":userid", strconv.Itoa(int(userid)))
+		log.Println("Redirect to", url)
+
+		this.Redirect(url, 302)
 	} else {
 		this.TplName = "login.tpl"
 	}
@@ -83,7 +97,7 @@ func (this *LoginUserController) Post() {
 	password := this.GetString("password")
 
 	if "" == name {
-		this.Data["json"] = map[string]interface{}{"code": 0, "message": "请填写用户名"}
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "请填写邮箱"}
 		this.ServeJSON()
 	}
 
@@ -93,9 +107,10 @@ func (this *LoginUserController) Post() {
 	}
 
 	isCancel, err := models.LoginUser(name, password)
-
 	if err == nil {
-		this.SetSession("userLogin", "1")
+		this.SetSession("userLogin", true)
+		this.SetSession("userEmail", name)
+		userTempEmail = name
 		this.Data["json"] = map[string]interface{}{"code": 1, "message": "登录成功"}
 	} else {
 		// 用户已经销号

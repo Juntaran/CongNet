@@ -26,6 +26,15 @@ func RegisterUser(user User) error {
 	return err
 }
 
+// 根据用户邮箱查找用户ID
+func GetIDByEmail(email string) uint {
+	// 这个 email 是一定存在的，所以懒得返回 error 了
+	var id uint
+	db2.QueryRow("SELECT id FROM users WHERE email=?", email).Scan(&id)
+	log.Println("Get", id, "By", email)
+	return id
+}
+
 // 用户登陆，传入 db 指针 和 用户信息，返回 error
 func LoginUser(email, password string) (int, error) {
 

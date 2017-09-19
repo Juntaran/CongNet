@@ -220,17 +220,16 @@ $(function(){
                 type:'POST',
                 dataType:'json',
                 success:function(data) {
+                    dialogInfo(data.message)
                     if (data.code == 1) {
-                        window.location='/friends';
-                        // setTimeout(function(){window.location.reload();}, 2000);
+                        // setTimeout(function(){window.location.href='/friends/'}, 1000);
                     } else {
-                        dialogInfo(data.message)
+
                     }
                 }
             });
         }
     });
-
 
     $('body').delegate('.js-album-submit', 'click', function(){
 		var that = $(this);
@@ -265,6 +264,7 @@ $(function(){
 });
 
 function dialogInfo(msg) {
+    $('#dialogInfo').remove();
 	var html = '';
 	html += '<div class="modal fade" id="dialogInfo" tabindex="-1" role="dialog" aria-labelledby="dialogInfoTitle">';
   	html += '<div class="modal-dialog" role="document">';
@@ -284,7 +284,7 @@ function dialogInfo(msg) {
   	html += '</div>';
 	html += '</div>';
 	$('body').append(html);
-	$('#dialogInfo').modal('show'); 
+	$('#dialogInfo').modal('show');
 }
 
 function dialogAlbum(id, title, summary, status) {

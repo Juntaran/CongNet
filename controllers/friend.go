@@ -9,6 +9,7 @@ package controllers
 import (
 	"CongNet/models"
 	"strconv"
+	"log"
 )
 
 // 查询好友
@@ -37,6 +38,8 @@ func (this *FriendsGetController) Post() {
 			ret += "\n"
 		}
 		ret += friends[length-1]
+		log.Println(ret)
+
 		this.Data["json"] = map[string]interface{}{"code": 1, "message": ret}
 		this.ServeJSON()
 	} else {
