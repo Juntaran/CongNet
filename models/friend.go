@@ -9,6 +9,7 @@ package models
 import (
 	"log"
 	"errors"
+	"strconv"
 )
 
 type Friend struct {
@@ -121,62 +122,71 @@ func BlockAddFriend(u_id, f_id uint) error {
 }
 
 // 获取一个用户的所有好友，返回他的好友id list 以及 list 大小
-func GetAllFriend(userid uint) ([]uint, int, error) {
+func GetAllFriend(userid string) ([]string, int, error) {
 	// 先判断这个 userid 是否存在
 	//ret := db.Where("id = ?", userid).First(&User{}).Scan(&User{})
-	err := db2.QueryRow("SELECT * FROM users WHERE id=?", userid).Scan(&User{})
+	log.Println(userid)
+
+	var name string
+	err := db2.QueryRow("SELECT name FROM users WHERE id=?", userid).Scan(&name)
 	if err != nil {
 		log.Println("This User not Exist")
 		return nil, 0, errors.New("This User not Exist")
 	}
-	if err == nil {
-		// 是否为注销用户判断
-		isCancel := &User{
-			ID: 	userid,
-		}
-		db.Where("id = ?", userid).First(&User{}).Scan(&User{})
-		db.First(&isCancel,"id = ?", userid)
-		if isCancel.Cancel == 1 {
-			log.Println("Farewell, this user is Canceled")
-			err = errors.New("Farewell, this user is Canceled")
-			return nil, 0, err
-		}
-		log.Println("Start Get", userid, "Friends")
+	log.Println("get", name, "friends")
 
-		// 结果集合
-		var friends []uint
-
-		// select * from friends where u_id = userid or f_id = usedrid
-		rows1, err := db2.Query("SELECT f_id FROM friends WHERE u_id=?", userid)
-		if err != nil {
-			log.Println(err)
-		} else {
-			for rows1.Next() {
-				var retFid uint
-				if err = rows1.Scan(&retFid); err == nil {
-					log.Println(err)
-				}
-				friends = append(friends, retFid)
-			}
-		}
-
-		rows2, err := db2.Query("SELECT u_id FROM friends WHERE f_id=?", userid)
-		if err != nil {
-			log.Println(err)
-		} else {
-			for rows2.Next() {
-				var retUid uint
-				if err = rows2.Scan(&retUid); err == nil {
-					log.Println(err)
-				}
-				friends = append(friends, retUid)
-			}
-		}
-
-		log.Println("Search Success")
-		return friends, len(friends), errors.New("Search Success")
-	} else {
-		log.Println("Search Fail")
-		return nil, 0, errors.New("Search Fail")
+	// 是否为注销用户判断
+	intUserid, _ := strconv.Atoi(userid)
+	isCancel := &User{
+		ID: 	uint(intUserid),
 	}
+	db.Where("id = ?", userid).First(&User{}).Scan(&User{})
+	db.First(&isCancel,"id = ?", userid)
+	if isCancel.Cancel == 1 {
+		log.Println("Farewell, this user is Canceled")
+		err = errors.New("Farewell, this user is Canceled")
+		return nil, 0, err
+	}
+	log.Println("Start Get", name, "Friends")
+
+	// 结果集合
+	var friends []uint
+
+	// select * from friends where u_id = userid or f_id = usedrid
+	rows1, err := db2.Query("SELECT f_id FROM friends WHERE u_id=?", userid)
+	if err != nil {
+		log.Println(err)
+	} else {
+		for rows1.Next() {
+			var retFid uint
+			if err = rows1.Scan(&retFid); err == nil {
+				log.Println(err)
+			}
+			friends = append(friends, retFid)
+		}
+	}
+
+	rows2, err := db2.Query("SELECT u_id FROM friends WHERE f_id=?", userid)
+	if err != nil {
+		log.Println(err)
+	} else {
+		for rows2.Next() {
+			var retUid uint
+			if err = rows2.Scan(&retUid); err == nil {
+				log.Println(err)
+			}
+			friends = append(friends, retUid)
+		}
+	}
+
+	var ret []string
+	for i := 0; i < len(friends); i++ {
+		var name string
+		db2.QueryRow("SELECT name FROM users WHERE id=?", strconv.Itoa(int(friends[i]))).Scan(&name)
+		ret = append(ret, name)
+	}
+
+	log.Println(ret)
+	log.Println("Search Success")
+	return ret, len(friends), nil
 }

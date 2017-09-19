@@ -220,10 +220,11 @@ $(function(){
                 type:'POST',
                 dataType:'json',
                 success:function(data) {
-                    dialogInfo(data.message)
                     if (data.code == 1) {
+                        window.location='/friends';
                         // setTimeout(function(){window.location.reload();}, 2000);
                     } else {
+                        dialogInfo(data.message)
                     }
                 }
             });
