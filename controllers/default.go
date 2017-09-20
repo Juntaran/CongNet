@@ -8,9 +8,13 @@ type MainController struct {
 	beego.Controller
 }
 
-func (c *MainController) Get() {
-	c.Data["Website"] = "beego.me"
-	c.Data["Email"] = "astaxie@gmail.com"
-	c.TplName = "index.tpl"
+func (this *MainController) Get() {
+	//this.Data["Website"] = "beego.me"
+	//this.Data["Email"] = "astaxie@gmail.com"
+	//this.TplName = "index.tpl"
 	//c.Ctx.WriteString("hello")
+	//url := this.URLFor("LoginUserController.Get", ":page", "111")
+	//log.Println("default url:", url)
+	//this.Redirect(url, 302)
+	this.Redirect("/login", 302)
 }

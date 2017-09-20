@@ -231,6 +231,60 @@ $(function(){
         }
     });
 
+    // 发布一个 diss
+    $('#diss-form').validate({
+        ignore:'',
+        rules : {
+            content:{ required : true }
+        },
+        messages : {
+            content : {required : '有什么想喷的呢~'},
+        },
+        submitHandler:function(form) {
+            var url = '/diss';
+            $(form).ajaxSubmit({
+                url:url,
+                type:'POST',
+                dataType:'json',
+                success:function(data) {
+                    dialogInfo(data.message)
+                    if (data.code == 1) {
+                        // setTimeout(function(){window.location.href='/friends/'}, 1000);
+                    } else {
+
+                    }
+                }
+            });
+        }
+    });
+
+    // 删除一个 diss
+    $('#dissDel-form').validate({
+        ignore:'',
+        rules : {
+            dissID:{ required : true }
+        },
+        messages : {
+            dissID : {required : '请填写要删除的吐槽id'},
+        },
+        submitHandler:function(form) {
+            var url = '/dissDel';
+            $(form).ajaxSubmit({
+                url:url,
+                type:'POST',
+                dataType:'json',
+                success:function(data) {
+                    dialogInfo(data.message)
+                    if (data.code == 1) {
+                        // setTimeout(function(){window.location.href='/friends/'}, 1000);
+                    } else {
+
+                    }
+                }
+            });
+        }
+    });
+
     $('body').delegate('.js-album-submit', 'click', function(){
 		var that = $(this);
 		var form = $('#album-form');

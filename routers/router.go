@@ -11,11 +11,11 @@ func init() {
 	beego.Router("/logout", &controllers.LogoutUserController{})
 	beego.Router("/register", &controllers.RegisterUserController{})
 	beego.Router("/cancellation", &controllers.CancelUserController{})
-	beego.Router("/friends", &controllers.FriendsGetController{})
-	//beego.Router("/user/:id", &controllers.FriendsGetController{})
+	beego.Router("/user/:userid", &controllers.UserController{}, "*:RedID")	// 登陆后跳转到 /user/userid
 
-	//beego.Router("/user/", &controllers.LoginUserController{})
-	beego.Router("/user/:userid", &controllers.LoginUserController{}, "*:List")
+	beego.Router("/friends", &controllers.FriendsGetController{})		// 测试用
+	beego.Router("/diss", &controllers.CreateDissController{})			// 测试用
+	beego.Router("/dissDel", &controllers.DeleteDissController{})		// 测试用
 }
 
 /*

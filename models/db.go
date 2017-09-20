@@ -7,12 +7,14 @@
 package models
 
 import (
+	"github.com/astaxie/beego"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"database/sql"
+
 	"log"
 	"fmt"
-	"github.com/astaxie/beego"
-	"database/sql"
 )
 
 // mysql 数据库初始化
@@ -61,14 +63,32 @@ func InitMySql(sqlurl, sqluser, sqlpass, sqldb string) (db *gorm.DB, err error) 
 		log.Println("friends table exist!")
 	}
 
+	// 3. diss 表
+	if db.HasTable(Diss{}) == false {
+		err = db.CreateTable(Diss{}).Error
+		if err != nil {
+			log.Println(err)
+			panic(err)
+		} else {
+			log.Println("Create diss table success")
+		}
+	} else {
+		log.Println("diss table exist!")
+	}
+
+
 	return db, nil
 }
 
-// models 包初始化，创建一个 db 对象并且读取配置
+// models 包初始化，创建2个 db 对象并且读取配置
+// db1 为 gorm 对象，适合构建表
+// db2 为 sql 驱动对象，轻量一些 一些小 sql 语句直接执行即可
 var db *gorm.DB
 var db2 *sql.DB
 
 func init()  {
+	// 进入 models 包先执行 init() 读数据库配置并连接初始化
+
 	// 从配置文件 conf/app.conf 中读取配置
 	sqluser := beego.AppConfig.String("mysqluser")
 	sqlpass := beego.AppConfig.String("mysqlpass")

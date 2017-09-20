@@ -10,6 +10,8 @@ import (
 	"CongNet/models"
 	"strconv"
 	"log"
+	"github.com/astaxie/beego"
+	"fmt"
 )
 
 
@@ -21,7 +23,7 @@ type RegisterUserController struct {
 func (this *RegisterUserController) Get() {
 	check := this.isLogin
 	if check {
-		this.Redirect("/article", 302)
+		this.Redirect("/", 302)
 	} else {
 		this.TplName = "register.tpl"
 	}
@@ -65,14 +67,17 @@ func (this *RegisterUserController) Post() {
 	this.Redirect("/register", 302)
 }
 
+type UserController struct {
+	beego.Controller
+}
+
+func (this *UserController) RedID() {
+	this.TplName = "index.tpl"
+}
 
 // login
 type LoginUserController struct {
 	BaseController
-}
-
-func (this *LoginUserController) List() {
-
 }
 
 func (this *LoginUserController) Get() {
@@ -83,9 +88,12 @@ func (this *LoginUserController) Get() {
 		log.Println("List userid:", userid)
 
 		// 2. 跳转到 /user/userid
-		url := this.URLFor("LoginUserController.List()", ":userid", strconv.Itoa(int(userid)))
+		//创建url
+		//{{urlfor "UserController.List" ":name" "astaxie" ":age" "25"}}
+		userController := UserController{}
+		url := userController.URLFor("UserController.RedID", ":userid", strconv.Itoa(int(userid)))
+		fmt.Println(url)
 		log.Println("Redirect to", url)
-
 		this.Redirect(url, 302)
 	} else {
 		this.TplName = "login.tpl"
@@ -110,7 +118,6 @@ func (this *LoginUserController) Post() {
 	if err == nil {
 		this.SetSession("userLogin", true)
 		this.SetSession("userEmail", name)
-		userTempEmail = name
 		this.Data["json"] = map[string]interface{}{"code": 1, "message": "登录成功"}
 	} else {
 		// 用户已经销号

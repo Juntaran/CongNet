@@ -35,6 +35,14 @@ func GetIDByEmail(email string) uint {
 	return id
 }
 
+// 根据用户邮箱查找用户名
+func GetNameByEmail(email string) string {
+	var name string
+	db2.QueryRow("SELECT name FROM users WHERE email=?", email).Scan(&name)
+	log.Println("Get", name, "By", email)
+	return name
+}
+
 // 用户登陆，传入 db 指针 和 用户信息，返回 error
 func LoginUser(email, password string) (int, error) {
 
@@ -91,10 +99,10 @@ func DeleteUser(name, password, email string) error {
 		err2 := ret.Select("cancel").Updates(user).Error
 		if err2 != nil {
 			log.Println(err2)
-			log.Println("Update Password Error")
+			log.Println("Update Cancel Error")
 			return err2
 		} else {
-			log.Println("Update Password Success")
+			log.Println("Update Cancel Success")
 			return nil
 		}
 	} else {

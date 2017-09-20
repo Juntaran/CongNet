@@ -18,8 +18,6 @@ type BaseController struct {
 	userEmail	string
 }
 
-var userTempEmail string = ""
-
 func (this *BaseController) Prepare() {
 	userLogin := this.GetSession("userLogin")
 	if userLogin == nil {
