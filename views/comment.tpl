@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>评论</title>
+{{template "inc/meta.tpl" .}}
+</head>
+<body>
+<div class="container">
+  <form class="form-signin" id="commentdiss-form">
+    <h2 class="form-signin-heading">评论一下~</h2>
+
+    <label for="inputUsername" class="sr-only">Username</label>
+    <input type="text" name="content" class="form-control" placeholder="有什么想说的呢~" required autofocus>
+
+    <div class="checkbox">
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">评论</button>
+  </form>
+</div>
+{{template "inc/foot.tpl" .}}
+</body>
+</html>

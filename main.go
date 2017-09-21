@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	// 从配置文件 conf/app.conf 中读取配置
+	//// 从配置文件 conf/app.conf 中读取配置
 	//sqluser := beego.AppConfig.String("mysqluser")
 	//sqlpass := beego.AppConfig.String("mysqlpass")
 	//sqlurl  := beego.AppConfig.String("mysqlurls")
@@ -82,6 +82,9 @@ func main() {
 
 	//friends, length, _ := models.GetAllFriend(4)
 	//log.Println(friends, length)
+
+	//ret := models.GetCommentByDissID("0")
+	//log.Println(ret)
 
 	beego.Run()
 }

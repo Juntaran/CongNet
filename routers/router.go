@@ -15,7 +15,10 @@ func init() {
 
 	beego.Router("/friends", &controllers.FriendsGetController{})		// 测试用
 	beego.Router("/diss", &controllers.CreateDissController{})			// 测试用
+	beego.Router("/dissRep", &controllers.ReportDissController{})		// 测试用
 	beego.Router("/dissDel", &controllers.DeleteDissController{})		// 测试用
+	beego.Router("/comment", &controllers.CreateCommentController{})		// 测试用
+	beego.Router("/commentDel", &controllers.DeleteCommentController{})		// 测试用
 }
 
 /*

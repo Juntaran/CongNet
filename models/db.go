@@ -76,6 +76,19 @@ func InitMySql(sqlurl, sqluser, sqlpass, sqldb string) (db *gorm.DB, err error) 
 		log.Println("diss table exist!")
 	}
 
+	// 4. comment 表
+	if db.HasTable(Comment{}) == false {
+		err = db.CreateTable(Comment{}).Error
+		if err != nil {
+			log.Println(err)
+			panic(err)
+		} else {
+			log.Println("Create comment table success")
+		}
+	} else {
+		log.Println("comment table exist!")
+	}
+
 
 	return db, nil
 }

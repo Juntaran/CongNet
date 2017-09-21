@@ -46,7 +46,6 @@ $(function(){
                 }
             });
         }
-		
 	});
     
 	//添加及修改文章
@@ -258,6 +257,35 @@ $(function(){
         }
     });
 
+    // 转发一个 diss
+    $('#dissRep-form').validate({
+        ignore:'',
+        rules : {
+            dissID:{ required : true },
+            report:{ required : true }
+        },
+        messages : {
+            dissID:{ required : '被转发的 dissID' },
+            report:{ required : '有什么想喷的呢~'},
+        },
+        submitHandler:function(form) {
+            var url = '/dissRep';
+            $(form).ajaxSubmit({
+                url:url,
+                type:'POST',
+                dataType:'json',
+                success:function(data) {
+                    dialogInfo(data.message)
+                    if (data.code == 1) {
+                        // setTimeout(function(){window.location.href='/friends/'}, 1000);
+                    } else {
+
+                    }
+                }
+            });
+        }
+    });
+
     // 删除一个 diss
     $('#dissDel-form').validate({
         ignore:'',
@@ -269,6 +297,61 @@ $(function(){
         },
         submitHandler:function(form) {
             var url = '/dissDel';
+            $(form).ajaxSubmit({
+                url:url,
+                type:'POST',
+                dataType:'json',
+                success:function(data) {
+                    dialogInfo(data.message)
+                    if (data.code == 1) {
+                        // setTimeout(function(){window.location.href='/friends/'}, 1000);
+                    } else {
+
+                    }
+                }
+            });
+        }
+    });
+
+
+    // 发布一个 comment
+    $('#commentdiss-form').validate({
+        ignore:'',
+        rules : {
+            content:{ required : true }
+        },
+        messages : {
+            content : {required : '有什么想说的呢~'},
+        },
+        submitHandler:function(form) {
+            var url = '/comment';
+            $(form).ajaxSubmit({
+                url:url,
+                type:'POST',
+                dataType:'json',
+                success:function(data) {
+                    dialogInfo(data.message)
+                    if (data.code == 1) {
+                        // setTimeout(function(){window.location.href='/friends/'}, 1000);
+                    } else {
+
+                    }
+                }
+            });
+        }
+    });
+
+    // 删除一个 comment
+    $('#commentDel-form').validate({
+        ignore:'',
+        rules : {
+            dissID:{ required : true }
+        },
+        messages : {
+            dissID : {required : '请填写要删除的comment id'},
+        },
+        submitHandler:function(form) {
+            var url = '/commentDel';
             $(form).ajaxSubmit({
                 url:url,
                 type:'POST',

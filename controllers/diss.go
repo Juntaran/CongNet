@@ -103,3 +103,60 @@ func (this *DeleteDissController) Post() {
 		this.ServeJSON()
 	}
 }
+
+
+// report diss
+type ReportDissController struct {
+	BaseController
+}
+
+func (this *ReportDissController) Get() {
+	check := this.isLogin
+	if check {
+		this.TplName = "dissRep.tpl"
+	} else {
+		this.Redirect("/login", 302)
+	}
+}
+
+func (this *ReportDissController) Post() {
+	// id, author_id, author_name, content, create_time
+	// 重新创建一个 	diss
+	// AutherID 	替换成转发用户的 ID
+	// AutherName	替换成转发用户的 Name
+	// Content		不变
+	// CreateTime	替换为当前时间
+	// Report		增加转发评语
+
+	dissID := this.GetString("dissID")
+	oldReport := models.GetDissRepByDissID(dissID)
+
+	author_email := this.userEmail
+	author_id := models.GetIDByEmail(author_email)
+	author_name := models.GetNameByEmail(author_email)
+	content := models.GetDissContentByDissID(dissID)
+	create_time := time.Now()
+
+	var report string = author_name + "：" +  this.GetString("report") + "//" + oldReport
+
+	if report == "" {
+		report = "转发"
+	}
+
+	diss := models.Diss{
+		AutherID: 			author_id,
+		AuthorName: 		author_name,
+		Content: 			content,
+		CreateTime: 		create_time,
+		Report:				report,
+	}
+	err := models.CreateDiss(diss)
+	if err == nil {
+		this.Data["json"] = map[string]interface{}{"code": 1, "message": "吐槽转发成功"}
+	} else {
+		this.Data["json"] = map[string]interface{}{"code": 0, "message": "吐槽转发失败"}
+	}
+	this.ServeJSON()
+	// 跳转到 / ，如果用户已经登录，会自动跳转到 /user/userid ，相当于刷新当前页
+	this.Redirect("/", 302)
+}

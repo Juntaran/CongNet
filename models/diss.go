@@ -18,6 +18,7 @@ type Diss struct {
 	AuthorName		string  	`gorm:"type:varchar(128);not null"` 	// 作者名
 	Content			string		`gorm:"type:varchar(256);not null"`		// 内容			长度限制为 256 一个汉字占3个字符，英文占1个	select * from disses WHERE LENGTH(content)=24
 	CreateTime 		time.Time	`gorm:"not null"` 						// 发布时间
+	Report 			string		`gorm:"type:varchar(256)"`				// 转发附议
 }
 
 // 发布一个 Diss
@@ -63,4 +64,32 @@ func GetEmailByDissID(dissID string) string {
 	db2.QueryRow("SELECT email FROM users WHERE id=?", userID).Scan(&email)
 	log.Println("Get", email, "By", dissID)
 	return email
+}
+
+// 根据 dissID 查找 diss 内容
+func GetDissContentByDissID(dissID string) string {
+	var content string
+	db2.QueryRow("SELECT content FROM disses WHERE id=?", dissID).Scan(&content)
+	log.Println("Get", content, "By", dissID)
+	return content
+}
+
+// 转发一个 diss
+func ReportDissByDissID(diss Diss) error {
+	// 重新创建一个 	diss
+	// AutherID 	替换成转发用户的 ID
+	// AutherName	替换成转发用户的 Name
+	// Content		不变
+	// CreateTime	替换为当前时间
+	// Report		增加转发评语
+	err := db.Create(&diss).Error
+	return err
+}
+
+// 根据 dissID 查找 dissRep
+func GetDissRepByDissID(dissID string) string {
+	var content string
+	db2.QueryRow("SELECT report FROM disses WHERE id=?", dissID).Scan(&content)
+	log.Println("Get", content, "By", dissID)
+	return content
 }
