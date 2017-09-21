@@ -27,7 +27,7 @@ func (this *CreateDissController) Get() {
 }
 
 func (this *CreateDissController) Post() {
-	// id, author_id, author_name, content, create_time
+	// id, author_id, author_name, content, create_time, original
 	author_email := this.userEmail
 	author_id := models.GetIDByEmail(author_email)
 	author_name := models.GetNameByEmail(author_email)
@@ -44,6 +44,7 @@ func (this *CreateDissController) Post() {
 		AuthorName: 		author_name,
 		Content: 			content,
 		CreateTime: 		create_time,
+		Original: 			"0",
 	}
 	err := models.CreateDiss(diss)
 	if err == nil {
@@ -136,19 +137,61 @@ func (this *ReportDissController) Post() {
 	author_name := models.GetNameByEmail(author_email)
 	content := models.GetDissContentByDissID(dissID)
 	create_time := time.Now()
+	var original string
+	var judge int = 0
 
-	var report string = author_name + "：" +  this.GetString("report") + "//" + oldReport
+	if len(oldReport) == 0 {
+		// 第一个转发
+		original = dissID
+		judge = 1
+	} else {
+		// 非第一个转发
+		// original 保持不变
+		original = models.GetDissOriByDissID(dissID)
+	}
+	newReport := this.GetString("report")
+	var report string = author_name + "：" + newReport + "//" + oldReport
 
-	if report == "" {
-		report = "转发"
+	if len(newReport) == 0 {
+		// 不添加评论
+		// log.Println("do nothing")
+	} else {
+		// 如果是不是第一个转发，则给最初的作者评论
+		if judge == 0 {
+			// log.Println("给最初的作者评论")
+			comment1 := models.Comment{
+				AutherID: 			author_id,
+				AuthorName: 		author_name,
+				CommentType:		0,
+				TypeID: 			original,
+				CreateTime: 		create_time,
+				CommentContent: 	newReport,
+			}
+			log.Println(comment1)
+			models.CreateComment(comment1)
+		}
+		log.Println("给上一个转发者评论")
+		// 把 newReport 写入转发的 comment
+		comment2 := models.Comment{
+			AutherID: 			author_id,
+			AuthorName: 		author_name,
+			CommentType:		0,
+			TypeID: 			dissID,
+			CreateTime: 		create_time,
+			CommentContent: 	newReport,
+		}
+		log.Println(comment2)
+		models.CreateComment(comment2)
 	}
 
+	// 转发
 	diss := models.Diss{
 		AutherID: 			author_id,
 		AuthorName: 		author_name,
 		Content: 			content,
 		CreateTime: 		create_time,
 		Report:				report,
+		Original: 			original,
 	}
 	err := models.CreateDiss(diss)
 	if err == nil {
@@ -158,5 +201,5 @@ func (this *ReportDissController) Post() {
 	}
 	this.ServeJSON()
 	// 跳转到 / ，如果用户已经登录，会自动跳转到 /user/userid ，相当于刷新当前页
-	this.Redirect("/", 302)
+	//this.Redirect("/", 302)
 }

@@ -19,6 +19,7 @@ type Diss struct {
 	Content			string		`gorm:"type:varchar(256);not null"`		// 内容			长度限制为 256 一个汉字占3个字符，英文占1个	select * from disses WHERE LENGTH(content)=24
 	CreateTime 		time.Time	`gorm:"not null"` 						// 发布时间
 	Report 			string		`gorm:"type:varchar(256)"`				// 转发附议
+	Original		string		`gorm:"type:varchar(128)"`				// 初始 dissID
 }
 
 // 发布一个 Diss
@@ -92,4 +93,12 @@ func GetDissRepByDissID(dissID string) string {
 	db2.QueryRow("SELECT report FROM disses WHERE id=?", dissID).Scan(&content)
 	log.Println("Get", content, "By", dissID)
 	return content
+}
+
+// 根据 dissID 查找 original
+func GetDissOriByDissID(dissID string) string {
+	var original string
+	db2.QueryRow("SELECT original FROM disses WHERE id=?", dissID).Scan(&original)
+	log.Println("Get", original, "By", dissID)
+	return original
 }

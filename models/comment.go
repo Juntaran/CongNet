@@ -17,7 +17,7 @@ type Comment struct {
 	AutherID		uint		`gorm:"not null"`						// 作者ID
 	AuthorName		string  	`gorm:"type:varchar(128);not null"` 	// 作者名
 	CommentType		uint		`gorm:"not null"`						// 评论的类型，是 diss 还是日志 还是 相册，目前 diss 对应0
-	TypeID			uint		`gorm:"not null"`						// 对应的ID 比如是对 dissID为100的 diss 的评论，这个字段记录100
+	TypeID			string		`gorm:"not null"`						// 对应的ID 比如是对 dissID为100的 diss 的评论，这个字段记录100
 	CreateTime 		time.Time	`gorm:"not null"` 						// 发布时间
 	CommentContent	string		`gorm:"type:varchar(256);not null"`		// 内容	长度限制为 256 一个汉字占3个字符，英文占1个
 }

@@ -262,11 +262,11 @@ $(function(){
         ignore:'',
         rules : {
             dissID:{ required : true },
-            report:{ required : true }
+            report:{ required : false }
         },
         messages : {
             dissID:{ required : '被转发的 dissID' },
-            report:{ required : '有什么想喷的呢~'},
+            report:{ required : '有什么想写在 repost 里的呢~'},
         },
         submitHandler:function(form) {
             var url = '/dissRep';
@@ -318,9 +318,11 @@ $(function(){
     $('#commentdiss-form').validate({
         ignore:'',
         rules : {
+            typeid:{ required: true },
             content:{ required : true }
         },
         messages : {
+            typeid:{ required : '评论对应的 dissid' },
             content : {required : '有什么想说的呢~'},
         },
         submitHandler:function(form) {

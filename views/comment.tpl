@@ -11,6 +11,9 @@
     <h2 class="form-signin-heading">评论一下~</h2>
 
     <label for="inputUsername" class="sr-only">Username</label>
+    <input type="text" name="typeid" class="form-control" placeholder="你想评论的吐槽ID~" required autofocus>
+
+    <label for="inputUsername" class="sr-only">Username</label>
     <input type="text" name="content" class="form-control" placeholder="有什么想说的呢~" required autofocus>
 
     <div class="checkbox">

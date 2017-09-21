@@ -11,7 +11,7 @@
     <h2 class="form-signin-heading">转发吐槽~</h2>
 
     <label for="inputUsername" class="sr-only">Username</label>
-    <input type="text" name="dissID" class="form-control" placeholder="你想删的吐槽ID~" required autofocus>
+    <input type="text" name="dissID" class="form-control" placeholder="你想转发的吐槽ID~" required autofocus>
 
     <label for="inputUsername" class="sr-only">Username</label>
     <input type="text" name="report" class="form-control" placeholder="有什么想喷的呢~" required autofocus>

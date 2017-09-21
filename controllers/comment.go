@@ -33,6 +33,7 @@ func (this *CreateCommentController) Post() {
 	author_id := models.GetIDByEmail(author_email)
 	author_name := models.GetNameByEmail(author_email)
 	var comment_type uint = 0
+	type_id := this.GetString("typeid")
 	create_time := time.Now()
 	comment_content := this.GetString("content")
 
@@ -48,6 +49,7 @@ func (this *CreateCommentController) Post() {
 		AutherID: 			author_id,
 		AuthorName: 		author_name,
 		CommentType:		comment_type,
+		TypeID: 			type_id,
 		CreateTime: 		create_time,
 		CommentContent: 	comment_content,
 	}
