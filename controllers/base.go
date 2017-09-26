@@ -36,6 +36,6 @@ func (this *BaseController) Prepare() {
 }
 
 func (this *BaseController) Go404() {
-	this.TplName = "404.tpl"
+	this.TplName = "404.html"
 	return
 }

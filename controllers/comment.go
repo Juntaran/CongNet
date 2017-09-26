@@ -20,7 +20,7 @@ type CreateCommentController struct {
 func (this *CreateCommentController) Get() {
 	check := this.isLogin
 	if check {
-		this.TplName = "comment.tpl"
+		this.TplName = "comment.html"
 	} else {
 		this.Redirect("/login", 302)
 	}
@@ -72,7 +72,7 @@ type DeleteCommentController struct {
 func (this *DeleteCommentController) Get() {
 	check := this.isLogin
 	if check {
-		this.TplName = "commentDel.tpl"
+		this.TplName = "commentDel.html"
 	} else {
 		this.Redirect("/login", 302)
 	}

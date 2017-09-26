@@ -20,7 +20,7 @@ type CreateDissController struct {
 func (this *CreateDissController) Get() {
 	check := this.isLogin
 	if check {
-		this.TplName = "diss.tpl"
+		this.TplName = "diss.html"
 	} else {
 		this.Redirect("/login", 302)
 	}
@@ -66,7 +66,7 @@ type DeleteDissController struct {
 func (this *DeleteDissController) Get() {
 	check := this.isLogin
 	if check {
-		this.TplName = "dissDel.tpl"
+		this.TplName = "dissDel.html"
 	} else {
 		this.Redirect("/login", 302)
 	}
@@ -114,7 +114,7 @@ type ReportDissController struct {
 func (this *ReportDissController) Get() {
 	check := this.isLogin
 	if check {
-		this.TplName = "dissRep.tpl"
+		this.TplName = "dissRep.html"
 	} else {
 		this.Redirect("/login", 302)
 	}

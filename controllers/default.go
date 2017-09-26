@@ -11,7 +11,7 @@ type MainController struct {
 func (this *MainController) Get() {
 	//this.Data["Website"] = "beego.me"
 	//this.Data["Email"] = "astaxie@gmail.com"
-	//this.TplName = "index.tpl"
+	//this.TplName = "index.html"
 	//c.Ctx.WriteString("hello")
 	//url := this.URLFor("LoginUserController.Get", ":page", "111")
 	//log.Println("default url:", url)

@@ -25,7 +25,7 @@ func (this *RegisterUserController) Get() {
 	if check {
 		this.Redirect("/", 302)
 	} else {
-		this.TplName = "register.tpl"
+		this.TplName = "register.html"
 	}
 }
 
@@ -72,7 +72,7 @@ type UserController struct {
 }
 
 func (this *UserController) RedID() {
-	this.TplName = "index.tpl"
+	this.TplName = "index.html"
 }
 
 // login
@@ -96,7 +96,7 @@ func (this *LoginUserController) Get() {
 		log.Println("Redirect to", url)
 		this.Redirect(url, 302)
 	} else {
-		this.TplName = "login.tpl"
+		this.TplName = "login.html"
 	}
 }
 
@@ -151,9 +151,9 @@ type CancelUserController struct {
 func (this *CancelUserController) Get() {
 	check := this.isLogin
 	if check {
-		this.TplName = "cancellation.tpl"
+		this.TplName = "cancellation.html"
 	} else {
-		this.TplName = "login.tpl"
+		this.TplName = "login.html"
 	}
 }
 

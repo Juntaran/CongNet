@@ -22,7 +22,7 @@ func (this *FriendsGetController) Get() {
 	if !check {
 		this.Redirect("/login", 302)
 	} else {
-		this.TplName = "friends.tpl"
+		this.TplName = "friends.html"
 	}
 }
 
